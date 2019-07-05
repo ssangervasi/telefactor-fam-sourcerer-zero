@@ -1,22 +1,27 @@
 # Git Log
 
 ```
+commit 548b6938381405c051f7e1def91c85ffe6dec233
+Author: Sebastian Sangervasi <ssangervasi@squareup.com>
+Date:   Fri Jul 5 12:40:17 2019 -0700
+
+    Init with examiner zero's tests
 ```
 
 # CLOC
 
 
-cloc|github.com/AlDanial/cloc v 1.82  T=0.04 s (975.0 files/s, 57627.8 lines/s)
+cloc|github.com/AlDanial/cloc v 1.82  T=0.06 s (602.0 files/s, 35782.1 lines/s)
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
 Ruby|30|290|186|1578
-Markdown|7|63|0|116
+Markdown|7|68|0|124
 Bourne Again Shell|1|6|0|35
 YAML|1|6|10|15
 --------|--------|--------|--------|--------
-SUM:|39|365|196|1744
+SUM:|39|370|196|1752
 
 # Spec Results
 ## Fam
@@ -58,7 +63,7 @@ NameError:
   uninitialized constant Fam::Family::Relationship
 # ./spec/fam/family/relationship_spec.rb:5:in `<top (required)>'
 
-Finished in 0.0002 seconds (files took 0.41242 seconds to load)
+Finished in 0.0003 seconds (files took 0.87624 seconds to load)
 0 examples, 0 failures, 2 errors occurred outside of examples
 
 ```
@@ -300,7 +305,7 @@ Failures:
       Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/get/person_spec.rb:31
       # ./spec/boilerplate/cli/get/person_spec.rb:10:in `block (2 levels) in <top (required)>'
 
-Finished in 8.92 seconds (files took 0.81455 seconds to load)
+Finished in 8.82 seconds (files took 0.73277 seconds to load)
 20 examples, 14 failures
 
 Failed examples:
