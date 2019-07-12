@@ -37,6 +37,7 @@ module Fam
     register 'get', aliases: ['g'] do |prefix|
       prefix.register 'person', Get::Person, aliases: %w[p]
       prefix.register 'parents', Get::Parents, aliases: %w[parent pt]
+      prefix.register 'children', Get::Children, aliases: %w[child cd]
       prefix.register 'grandparents', Get::Grandparents, aliases: %w[grandparent gpt]
     end
     register 'version', Version, aliases: %w[v -v --version]

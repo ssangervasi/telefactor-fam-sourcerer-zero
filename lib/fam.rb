@@ -32,7 +32,11 @@ module Fam
       output_path:,
       person_name:
     )
-      failure
+      family = read_family_from_file(input_path)
+      person = Fam::Family::Person.new(name: person_name)
+      family.add_person(person)
+      write(path: output_path, json_hash: family.to_h)
+      success("Added person: #{person_name}")
     end
 
     # IMPLEMENT ME
@@ -42,7 +46,16 @@ module Fam
       child_name:,
       parent_names:
     )
-      failure
+      family = read_family_from_file(input_path)
+      child = Fam::Family::Person.new(name: child_name)
+      parents = parent_names.map { |name| Fam::Family::Person.new(name: name) }
+      parents.each { |parent| family.add_parent(parent: parent, child: child) }
+      write(path: output_path, json_hash: family.to_h)
+      success("Added #{parent_names.join(' & ')} as parents of #{child_name}")
+    rescue Fam::Family::Errors::NoSuchPerson => e
+      failure("No such person '#{e.message}' in family '#{input_path}'!")
+    rescue Fam::Family::Errors::ExcessParents
+      failure("Child '#{child_name}' can't have more than 2 parents!")
     end
 
     # IMPLEMENT ME
@@ -50,7 +63,11 @@ module Fam
       input_path:,
       person_name:
     )
-      failure
+      family = read_family_from_file(input_path)
+      person = family.get_person(person_name)
+      success(person.name)
+    rescue Fam::Family::Errors::NoSuchPerson => e
+      failure("No such person '#{e.message}' in family '#{input_path}'")
     end
 
     # IMPLEMENT ME
@@ -58,7 +75,24 @@ module Fam
       input_path:,
       child_name:
     )
-      failure
+      family = read_family_from_file(input_path)
+      child = family.get_person(child_name)
+      parents = family.get_parents(child)
+      success(parents.map(&:name).join("\n"))
+    rescue Fam::Family::Errors::NoSuchPerson => e
+      failure("No child named '#{e.message}' in family '#{input_path}'!")
+    end
+
+    def get_children(
+      input_path:,
+      parent_name:
+    )
+      family = read_family_from_file(input_path)
+      parent = family.get_person(parent_name)
+      children = family.get_children(parent)
+      success(children.map(&:name).join("\n"))
+    rescue Fam::Family::Errors::NoSuchPerson => e
+      failure("No parent named '#{e.message}' in family '#{input_path}'!")
     end
 
     # IMPLEMENT ME
@@ -67,7 +101,22 @@ module Fam
       child_name:,
       greatness:
     )
-      failure
+      family = read_family_from_file(input_path)
+      child = family.get_person(child_name)
+      grandparents = family.get_grandparents(child, greatness: greatness)
+      success(grandparents.map(&:name).join("\n"))
+    rescue Fam::Family::Errors::NoSuchPerson => e
+      failure("No child named '#{e.message}' in family '#{input_path}'!")
+    end
+
+    private
+
+    def read_family_from_file(input_path)
+      input_hash = read(path: input_path)
+      Fam::Family.from_h(
+        people: input_hash[:people] || [],
+        relationships: input_hash[:relationships] || []
+      )
     end
   end
 end

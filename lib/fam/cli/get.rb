@@ -51,6 +51,30 @@ module Fam::CLI
       end
     end
 
+    class Children < Command
+      CommonArgDefs
+        .new(self)
+        .input_path
+        .parent_name
+
+      desc <<~DESC
+        Get the children of a parent, printing each on a seperate line.
+      DESC
+
+      def call(
+        input_path:,
+        parent_name:,
+        **
+      )
+        finish(
+          Fam.get_children(
+            input_path: input_path,
+            parent_name: parent_name
+          )
+        )
+      end
+    end
+
     class Grandparents < Command
       CommonArgDefs
         .new(self)

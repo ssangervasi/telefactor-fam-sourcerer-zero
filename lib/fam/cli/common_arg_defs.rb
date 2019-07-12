@@ -38,6 +38,16 @@ module Fam::CLI
       end
     end
 
+    def parent_name
+      tap do
+        @command.argument(
+          :parent_name,
+          required: true,
+          desc: "The parents's full name. Must already exist."
+        )
+      end
+    end
+
     def child_name
       tap do
         @command.argument(
