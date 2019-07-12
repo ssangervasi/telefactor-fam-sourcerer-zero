@@ -19,7 +19,7 @@ module Fam
       def to_h
         {
           child_name: @child_name,
-          parent_name: @parent_name
+          parent_name: @parent_name,
         }
       end
 

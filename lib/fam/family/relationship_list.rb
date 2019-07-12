@@ -21,13 +21,16 @@ module Fam
       end
 
       def add_relationship(child_name:, parent_name:)
-        new_relationship = Fam::Family::Relationship.new(child_name: child_name, parent_name: parent_name)
+        new_relationship = Fam::Family::Relationship.new(
+          child_name: child_name,
+          parent_name: parent_name
+        )
         @relationships_by_child[child_name] << new_relationship
         @relationships_by_parent[parent_name] << new_relationship
       end
 
       def include?(child:, parent:)
-        !@relationships_by_child[child.name].detect { |rel| rel.parent_name == parent.name}.nil?
+        !@relationships_by_child[child.name].detect { |rel| rel.parent_name == parent.name }.nil?
       end
 
       def get_parent_names(child_name)
@@ -41,7 +44,7 @@ module Fam
       def get_grandparent_names(person, greatness: 0)
         elder_list = get_parent_names(person)
         while greatness >= 0
-          elder_list = elder_list.map { |person| get_parent_names(person) }.flatten
+          elder_list = elder_list.map { |curr_person| get_parent_names(curr_person) }.flatten
           greatness -= 1
         end
         elder_list

@@ -8,16 +8,18 @@ require 'fam/family/relationship_list'
 module Fam
   class Family
     module Errors
-      class NoSuchPerson < Exception; end
-      class DuplicatePerson < Exception; end
-      class ExcessParents < Exception; end
+      class NoSuchPerson < RuntimeError; end
+      class DuplicatePerson < RuntimeError; end
+      class ExcessParents < RuntimeError; end
     end
 
     MAX_PARENTS = 2
 
     def self.from_h(people:, relationships:)
       people = people.map { |person| Fam::Family::Person.from_h(person) }
-      relationships = relationships.map { |relationship| Fam::Family::Relationship.from_h(relationship) }
+      relationships = relationships.map do |relationship|
+        Fam::Family::Relationship.from_h(relationship)
+      end
       new(people: people, relationships: relationships)
     end
 
@@ -37,7 +39,7 @@ module Fam
     def to_h
       {
         people: people.map(&:to_h),
-        relationships: relationships.map(&:to_h)
+        relationships: relationships.map(&:to_h),
       }
     end
 
@@ -64,17 +66,13 @@ module Fam
     end
 
     def add_parent(parent:, child:)
-      raise NoMethodError unless parent.is_a? Fam::Family::Person
-      raise NoMethodError unless child.is_a? Fam::Family::Person
-
+      validate_add_parent!(parent: parent, child: child)
       return parent if @relationships.include?(parent: parent, child: child)
 
-      raise Errors::ExcessParents if has_max_parents?(child)
+      raise Errors::ExcessParents if max_parents?(child)
 
-      child = get_person(child.name)
-      get_person(parent.name).tap do |parent|
-        @relationships.add_relationship(child_name: child.name, parent_name: parent.name)
-      end
+      @relationships.add_relationship(child_name: child.name, parent_name: parent.name)
+      parent
     end
 
     def get_parents(person)
@@ -98,8 +96,15 @@ module Fam
 
     private
 
-    def has_max_parents?(person)
+    def max_parents?(person)
       get_parents(person).length == MAX_PARENTS
+    end
+
+    def validate_add_parent!(parent:, child:)
+      raise NoMethodError unless parent.is_a? Fam::Family::Person
+      raise NoMethodError unless child.is_a? Fam::Family::Person
+      raise Errors::NoSuchPerson, parent.name unless include?(parent.name)
+      raise Errors::NoSuchPerson, child.name unless include?(child.name)
     end
   end
 end
