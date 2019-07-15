@@ -1,70 +1,166 @@
 # Git Log
 
 ```
-commit 548b6938381405c051f7e1def91c85ffe6dec233
-Author: Sebastian Sangervasi <ssangervasi@squareup.com>
-Date:   Fri Jul 5 12:40:17 2019 -0700
+commit a06ac1b43d51dcd96cd73fc49309590e2033f416
+Author: Nick Induni <ninduni@squareup.com>
+Date:   Thu Jul 11 21:44:03 2019 -0700
 
-    Init with examiner zero's tests
+    Fix rubocop errors
 ```
 
 # CLOC
 
 
-cloc|github.com/AlDanial/cloc v 1.82  T=0.06 s (602.0 files/s, 35782.1 lines/s)
+cloc|github.com/AlDanial/cloc v 1.82  T=0.04 s (999.7 files/s, 61606.4 lines/s)
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-Ruby|30|290|186|1578
+Ruby|34|351|187|1848
 Markdown|7|68|0|124
 Bourne Again Shell|1|6|0|35
 YAML|1|6|10|15
 --------|--------|--------|--------|--------
-SUM:|39|370|196|1752
+SUM:|43|431|197|2022
 
 # Spec Results
 ## Fam
 
 ```
 
-An error occurred while loading ./spec/fam/family/person_spec.rb.
-Failure/Error:
-  RSpec.describe Fam::Family::Person do
-    let(:name) { 'Bob Saget' }
-  
-    describe '.from_h' do
-      let(:input_hash) do
-        { name: name }
-      end
-  
-      it 'should create a person from a hash' do
-        expect(described_class.from_h(input_hash)).to_not be_nil
+Fam
+  .add_person
+    should return success
+    should return success message
+    should return Result type
+    should write result to output path
+    should read & write result to output path
+  .add_parents
+    should return success
+    should return success message
+    should return Result type
+    should write data to the output path
+    invalid child name
+      should return failure
+      should return failure message
+    invalid parent name
+      should return failure
+      should return failure message
+    too many parents
+      should return failure
+      should return failure message
+  .get_person
+    should return success
+    should return output
+    should return Result type
+    invalid name
+      should return failure
+      should return failure message
+  .get_parents
+    should return success
+    should return output
+    should return Result type
+    invalid name
+      should return failure
+      should return failure message
+  .get_grandparents
+    should return success
+    should return output
+    should return Result type
+    greatness of 1
+      should return success
+      should return output
+    invalid name
+      should return failure
+      should return failure message
 
-NameError:
-  uninitialized constant Fam::Family::Person
-  Did you mean?  Fam::VERSION
-# ./spec/fam/family/person_spec.rb:5:in `<top (required)>'
+Fam::Family::Person
+  should set the name
+  should return a hash with name
+  .from_h
+    should create a person from a hash
+    should set the name of the person
+  Comparable
+    should be comparable by name
+    should be sortable
 
-An error occurred while loading ./spec/fam/family/relationship_spec.rb.
-Failure/Error:
-  RSpec.describe Fam::Family::Relationship do
-    let(:child_name) { 'Sue Saget' }
-    let(:parent_name) { 'Bob Saget' }
-  
-    describe '.from_h' do
-      let(:input_hash) do
-        {
-          child_name: child_name,
-          parent_name: parent_name,
-        }
+Fam::Family::Relationship
+  should set the child name
+  should set the parent name
+  should return a hash with child and parent names
+  .from_h
+    should create a relationship from a hash
+    should set the name of the child
+    should set the name of the parent
+  Comparable
+    child names are different, parent names are the same
+      should be comparable by name
+      should be sortable
+    child names are the same, parent names are different
+      should be comparable by name
+      should be sortable
+    child names are different, parent names are different
+      should be comparable by name (with child names coming first)
+      should be sortable by the child names first
 
-NameError:
-  uninitialized constant Fam::Family::Relationship
-# ./spec/fam/family/relationship_spec.rb:5:in `<top (required)>'
+Fam::Family
+  should create a family
+  should return an inspection with people numbers
+  .from_h
+    people is not an array
+      should raise
+    relationships is not an array
+      should raise
+    empty people and relationships
+      should create a family
+    people and relationships
+      should create a family
+      should have 3 people
+      should have 2 relationships
+  #to_h
+    should return a hash with people and relationships
+    should return people as a hash
+    should return relationships as a hash
+  #people
+    should return same number of people
+    should return person types
+  #get_person
+    should return person by name
+    should return error if person does not exist in family
+  #add_person
+    should add a person to the family
+    should raise if passing in a string
+    should raise if creating a duplicate person in the family
+  #include?
+    should return true if passing a name of a family member
+    should return false if passing a name of someone not in the family
+    should always return false if passing a Person
+  #add_parent
+    should raise if passing in strings
+    should raise if parent is not found
+    should raise if child is not found
+    should add a relationship
+    should add a relationship with parent and child
+    should return the parent
+    existing relationship
+      returns the parent
+      does not add a new relationship
+    has 2 parents already
+      should raise error
+  #get_parents
+    should raise error when passed a string
+    should return parents when there are some
+    should return no parents when there are none
+    should return parents of Person type
+  #get_grandparents
+    should raise error when passed a string
+    should get grandparents with no greatness by default
+    should get grandparents with 0 greatness
+    should get just great-grandparents with 1 greatness
+    should get just great-great-grandparents with 2 greatness
 
-Finished in 0.0003 seconds (files took 0.87624 seconds to load)
-0 examples, 0 failures, 2 errors occurred outside of examples
+Finished in 0.09341 seconds (files took 0.60381 seconds to load)
+89 examples, 0 failures
 
 ```
 
@@ -75,18 +171,18 @@ Finished in 0.0003 seconds (files took 0.87624 seconds to load)
 Fam::CLI::Add::Parents
   when the child and parent names are given
     behaves like a successful command
-      exits with a zero status code (FAILED - 1)
-      matches the expected output (FAILED - 2)
+      exits with a zero status code
+      matches the expected output
   when all names are missing
     behaves like a failed command
-      exits with a non-zero status code (FAILED - 3)
-      matches the expected error (FAILED - 4)
+      exits with a non-zero status code
+      matches the expected error
 
 Fam::CLI::Add::Person
   when a name is given
     behaves like a successful command
-      exits with a zero status code (FAILED - 5)
-      matches the expected output (FAILED - 6)
+      exits with a zero status code
+      matches the expected output
   when no name is provided
     behaves like a failed command
       exits with a non-zero status code
@@ -95,22 +191,22 @@ Fam::CLI::Add::Person
 Fam::CLI::Get::Parents
   when a child name is given
     behaves like a successful command
-      exits with a zero status code (FAILED - 7)
-      matches the expected output (FAILED - 8)
+      exits with a zero status code
+      matches the expected output
   when the child name is missing
     behaves like a failed command
-      exits with a non-zero status code (FAILED - 9)
-      matches the expected error (FAILED - 10)
+      exits with a non-zero status code
+      matches the expected error
 
 Fam::CLI::Get::Person
   when a name is given
     behaves like a successful command
-      exits with a zero status code (FAILED - 11)
-      matches the expected output (FAILED - 12)
+      exits with a zero status code
+      matches the expected output
   when the name is missing
     behaves like a failed command
-      exits with a non-zero status code (FAILED - 13)
-      matches the expected error (FAILED - 14)
+      exits with a non-zero status code
+      matches the expected error
 
 Fam::File::Reader::JSONReader
   #read
@@ -124,206 +220,8 @@ Fam::File::Writer::JSONWriter
     should be a kind of String
     modifies the specified file
 
-Failures:
-
-  1) Fam::CLI::Add::Parents when the child and parent names are given behaves like a successful command exits with a zero status code
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/add/parents_spec.rb:25
-     # ./spec/boilerplate/cli/add/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  2) Fam::CLI::Add::Parents when the child and parent names are given behaves like a successful command matches the expected output
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/add/parents_spec.rb:25
-     # ./spec/boilerplate/cli/add/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  3) Fam::CLI::Add::Parents when all names are missing behaves like a failed command exits with a non-zero status code
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/add/parents_spec.rb:35
-     # ./spec/boilerplate/cli/add/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  4) Fam::CLI::Add::Parents when all names are missing behaves like a failed command matches the expected error
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/add/parents_spec.rb:35
-     # ./spec/boilerplate/cli/add/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  5) Fam::CLI::Add::Person when a name is given behaves like a successful command exits with a zero status code
-     Failure/Error: expect(subject.status).to eq(0), (subject.output + subject.error)
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/add/person_spec.rb:13
-     # ./spec/spec_helpers/cli.rb:28:in `block (3 levels) in <top (required)>'
-
-  6) Fam::CLI::Add::Person when a name is given behaves like a successful command matches the expected output
-     Failure/Error: expect(subject.output).to match expected_output
-       expected "" to match "José Exemplo"
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/add/person_spec.rb:13
-     # ./spec/spec_helpers/cli.rb:32:in `block (3 levels) in <top (required)>'
-
-  7) Fam::CLI::Get::Parents when a child name is given behaves like a successful command exits with a zero status code
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/get/parents_spec.rb:33
-     # ./spec/boilerplate/cli/get/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  8) Fam::CLI::Get::Parents when a child name is given behaves like a successful command matches the expected output
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/get/parents_spec.rb:33
-     # ./spec/boilerplate/cli/get/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  9) Fam::CLI::Get::Parents when the child name is missing behaves like a failed command exits with a non-zero status code
-     Failure/Error:
-       expect(
-         Hatchery::Names.simpsons.map do |person_name|
-           exec_fam('add', 'person', person_name)
-         end
-       ).to(
-         all(be_success),
-         'Must be able to `add person` before testing `get parents`'
-       )
-
-       Must be able to `add person` before testing `get parents`
-     Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/get/parents_spec.rb:43
-     # ./spec/boilerplate/cli/get/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  10) Fam::CLI::Get::Parents when the child name is missing behaves like a failed command matches the expected error
-      Failure/Error:
-        expect(
-          Hatchery::Names.simpsons.map do |person_name|
-            exec_fam('add', 'person', person_name)
-          end
-        ).to(
-          all(be_success),
-          'Must be able to `add person` before testing `get parents`'
-        )
-
-        Must be able to `add person` before testing `get parents`
-      Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/get/parents_spec.rb:43
-      # ./spec/boilerplate/cli/get/parents_spec.rb:14:in `block (2 levels) in <top (required)>'
-
-  11) Fam::CLI::Get::Person when a name is given behaves like a successful command exits with a zero status code
-      Failure/Error:
-        expect(exec_fam('add', 'person', person_name))
-          .to(
-            be_success,
-            'Must be able to `add person` before testing `get person`'
-          )
-
-        Must be able to `add person` before testing `get person`
-      Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/get/person_spec.rb:21
-      # ./spec/boilerplate/cli/get/person_spec.rb:10:in `block (2 levels) in <top (required)>'
-
-  12) Fam::CLI::Get::Person when a name is given behaves like a successful command matches the expected output
-      Failure/Error:
-        expect(exec_fam('add', 'person', person_name))
-          .to(
-            be_success,
-            'Must be able to `add person` before testing `get person`'
-          )
-
-        Must be able to `add person` before testing `get person`
-      Shared Example Group: "a successful command" called from ./spec/boilerplate/cli/get/person_spec.rb:21
-      # ./spec/boilerplate/cli/get/person_spec.rb:10:in `block (2 levels) in <top (required)>'
-
-  13) Fam::CLI::Get::Person when the name is missing behaves like a failed command exits with a non-zero status code
-      Failure/Error:
-        expect(exec_fam('add', 'person', person_name))
-          .to(
-            be_success,
-            'Must be able to `add person` before testing `get person`'
-          )
-
-        Must be able to `add person` before testing `get person`
-      Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/get/person_spec.rb:31
-      # ./spec/boilerplate/cli/get/person_spec.rb:10:in `block (2 levels) in <top (required)>'
-
-  14) Fam::CLI::Get::Person when the name is missing behaves like a failed command matches the expected error
-      Failure/Error:
-        expect(exec_fam('add', 'person', person_name))
-          .to(
-            be_success,
-            'Must be able to `add person` before testing `get person`'
-          )
-
-        Must be able to `add person` before testing `get person`
-      Shared Example Group: "a failed command" called from ./spec/boilerplate/cli/get/person_spec.rb:31
-      # ./spec/boilerplate/cli/get/person_spec.rb:10:in `block (2 levels) in <top (required)>'
-
-Finished in 8.82 seconds (files took 0.73277 seconds to load)
-20 examples, 14 failures
-
-Failed examples:
-
-rspec ./spec/boilerplate/cli/add/parents_spec.rb[1:1:1:1] # Fam::CLI::Add::Parents when the child and parent names are given behaves like a successful command exits with a zero status code
-rspec ./spec/boilerplate/cli/add/parents_spec.rb[1:1:1:2] # Fam::CLI::Add::Parents when the child and parent names are given behaves like a successful command matches the expected output
-rspec ./spec/boilerplate/cli/add/parents_spec.rb[1:2:1:1] # Fam::CLI::Add::Parents when all names are missing behaves like a failed command exits with a non-zero status code
-rspec ./spec/boilerplate/cli/add/parents_spec.rb[1:2:1:2] # Fam::CLI::Add::Parents when all names are missing behaves like a failed command matches the expected error
-rspec ./spec/boilerplate/cli/add/person_spec.rb[1:1:1:1] # Fam::CLI::Add::Person when a name is given behaves like a successful command exits with a zero status code
-rspec ./spec/boilerplate/cli/add/person_spec.rb[1:1:1:2] # Fam::CLI::Add::Person when a name is given behaves like a successful command matches the expected output
-rspec ./spec/boilerplate/cli/get/parents_spec.rb[1:1:1:1] # Fam::CLI::Get::Parents when a child name is given behaves like a successful command exits with a zero status code
-rspec ./spec/boilerplate/cli/get/parents_spec.rb[1:1:1:2] # Fam::CLI::Get::Parents when a child name is given behaves like a successful command matches the expected output
-rspec ./spec/boilerplate/cli/get/parents_spec.rb[1:2:1:1] # Fam::CLI::Get::Parents when the child name is missing behaves like a failed command exits with a non-zero status code
-rspec ./spec/boilerplate/cli/get/parents_spec.rb[1:2:1:2] # Fam::CLI::Get::Parents when the child name is missing behaves like a failed command matches the expected error
-rspec ./spec/boilerplate/cli/get/person_spec.rb[1:1:1:1] # Fam::CLI::Get::Person when a name is given behaves like a successful command exits with a zero status code
-rspec ./spec/boilerplate/cli/get/person_spec.rb[1:1:1:2] # Fam::CLI::Get::Person when a name is given behaves like a successful command matches the expected output
-rspec ./spec/boilerplate/cli/get/person_spec.rb[1:2:1:1] # Fam::CLI::Get::Person when the name is missing behaves like a failed command exits with a non-zero status code
-rspec ./spec/boilerplate/cli/get/person_spec.rb[1:2:1:2] # Fam::CLI::Get::Person when the name is missing behaves like a failed command matches the expected error
+Finished in 14.37 seconds (files took 0.50811 seconds to load)
+20 examples, 0 failures
 
 ```
 
